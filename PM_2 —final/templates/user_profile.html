@@ -1,0 +1,206 @@
+{% extends "base.html" %}
+
+{% block title %}{{ user.name }}'s Profile - Toy Planner{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="hero">
+        <div style="font-size: 4rem; margin-bottom: 1rem;">👤</div>
+        <h1>Welcome, {{ user.name }}!</h1>
+        <p>Here's your booking history and profile information</p>
+    </div>
+
+    <!-- User Information -->
+    <div class="detail-section" style="margin-bottom: 2rem;">
+        <h3>Profile Information</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 1rem;">
+            <div>
+                <strong>Name:</strong><br>
+                <span style="font-size: 1.1rem;">{{ user.name }}</span>
+            </div>
+            <div>
+                <strong>Email:</strong><br>
+                <span style="font-size: 1.1rem;">{{ user.email }}</span>
+            </div>
+            <div>
+                <strong>Phone:</strong><br>
+                <span style="font-size: 1.1rem;">{{ user.phone }}</span>
+            </div>
+            <div>
+                <strong>Member Since:</strong><br>
+                <span style="font-size: 1.1rem;">{{ user.created_at.strftime('%B %Y') }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking Statistics -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+        <div class="detail-section" style="text-align: center;">
+            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📊</div>
+            <h4>Total Bookings</h4>
+            <div style="font-size: 2rem; color: var(--accent-burgundy); font-weight: bold;">
+                {{ upcoming_bookings|length + past_bookings|length }}
+            </div>
+        </div>
+        
+        <div class="detail-section" style="text-align: center;">
+            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎉</div>
+            <h4>Upcoming Events</h4>
+            <div style="font-size: 2rem; color: var(--accent-green); font-weight: bold;">
+                {{ upcoming_bookings|length }}
+            </div>
+        </div>
+        
+        <div class="detail-section" style="text-align: center;">
+            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">✅</div>
+            <h4>Past Events</h4>
+            <div style="font-size: 2rem; color: var(--text-light); font-weight: bold;">
+                {{ past_bookings|length }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Upcoming Bookings -->
+    {% if upcoming_bookings %}
+    <div class="detail-section" style="margin-bottom: 3rem;">
+        <h3>🎉 Upcoming Events</h3>
+        <div style="margin-top: 1.5rem;">
+            {% for booking in upcoming_bookings %}
+            <div style="border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; background: var(--soft-sand);">
+                <div style="display: grid; grid-template-columns: 1fr auto; gap: 2rem; align-items: start;">
+                    <div>
+                        <h4 style="margin-bottom: 0.5rem; color: var(--accent-burgundy);">
+                            {{ booking.venue.name }}
+                        </h4>
+                        <p style="margin-bottom: 1rem; color: var(--text-light);">
+                            📍 {{ booking.venue.address }}
+                        </p>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                            <div>
+                                <strong>Event Date:</strong><br>
+                                {{ booking.event_date.strftime('%B %d, %Y') }}
+                            </div>
+                            <div>
+                                <strong>Guests:</strong><br>
+                                {{ booking.guest_count }} people
+                            </div>
+                            <div>
+                                <strong>Event Type:</strong><br>
+                                {{ booking.event_type.title() }}
+                            </div>
+                            {% if booking.selected_hall %}
+                            <div>
+                                <strong>Hall:</strong><br>
+                                {{ booking.selected_hall.name }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        {% if booking.special_requests %}
+                        <div style="margin-top: 1rem;">
+                            <strong>Special Requests:</strong><br>
+                            <p style="background: white; padding: 1rem; border-radius: 8px; margin-top: 0.5rem;">
+                                {{ booking.special_requests }}
+                            </p>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div style="text-align: right;">
+                        <div style="background: var(--accent-green); color: white; padding: 0.5rem 1rem; border-radius: 20px; margin-bottom: 1rem;">
+                            {{ booking.status.title() }}
+                        </div>
+                        <div style="font-size: 1.2rem; font-weight: bold; margin-bottom: 1rem;">
+                            {{ "{:,}".format(booking.total_amount) }} KZT
+                        </div>
+                        <div style="font-size: 0.9rem; color: var(--text-light);">
+                            Booking ID: #{{ booking.id }}
+                        </div>
+                        <div style="font-size: 0.9rem; color: var(--text-light);">
+                            Booked: {{ booking.created_at.strftime('%m/%d/%Y') }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Past Bookings -->
+    {% if past_bookings %}
+    <div class="detail-section">
+        <h3>📋 Past Events</h3>
+        <div style="margin-top: 1.5rem;">
+            {% for booking in past_bookings %}
+            <div style="border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; opacity: 0.8;">
+                <div style="display: grid; grid-template-columns: 1fr auto; gap: 2rem; align-items: start;">
+                    <div>
+                        <h4 style="margin-bottom: 0.5rem;">
+                            {{ booking.venue.name }}
+                        </h4>
+                        <p style="margin-bottom: 1rem; color: var(--text-light);">
+                            📍 {{ booking.venue.address }}
+                        </p>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                            <div>
+                                <strong>Event Date:</strong><br>
+                                {{ booking.event_date.strftime('%B %d, %Y') }}
+                            </div>
+                            <div>
+                                <strong>Guests:</strong><br>
+                                {{ booking.guest_count }} people
+                            </div>
+                            <div>
+                                <strong>Event Type:</strong><br>
+                                {{ booking.event_type.title() }}
+                            </div>
+                            {% if booking.selected_hall %}
+                            <div>
+                                <strong>Hall:</strong><br>
+                                {{ booking.selected_hall.name }}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: right;">
+                        <div style="background: var(--text-light); color: white; padding: 0.5rem 1rem; border-radius: 20px; margin-bottom: 1rem;">
+                            {{ booking.status.title() }}
+                        </div>
+                        <div style="font-size: 1.2rem; font-weight: bold; margin-bottom: 1rem;">
+                            {{ "{:,}".format(booking.total_amount) }} KZT
+                        </div>
+                        <div style="font-size: 0.9rem; color: var(--text-light);">
+                            Booking ID: #{{ booking.id }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- No Bookings Message -->
+    {% if not upcoming_bookings and not past_bookings %}
+    <div style="text-align: center; margin: 3rem 0;">
+        <div style="font-size: 4rem; margin-bottom: 1rem;">🎭</div>
+        <h3>No bookings yet!</h3>
+        <p style="margin-bottom: 2rem;">Start planning your perfect celebration by browsing our amazing venues.</p>
+        <a href="{{ url_for('venues') }}" class="btn btn-primary btn-large">Browse Venues</a>
+    </div>
+    {% endif %}
+
+    <!-- Action Buttons -->
+    <div style="text-align: center; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border-color);">
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="{{ url_for('venues') }}" class="btn btn-primary">Book Another Venue</a>
+            <a href="{{ url_for('feedback_page') }}" class="btn btn-outline">Share Feedback</a>
+            <a href="{{ url_for('profile') }}" class="btn btn-outline">Back to Profile</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

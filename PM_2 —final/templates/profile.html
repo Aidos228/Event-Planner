@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - Toy Planner{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="hero">
+        <div style="font-size: 4rem; margin-bottom: 1rem;">👤</div>
+        <h1>My Profile</h1>
+        <p>Enter your email address to view your booking history and profile information</p>
+    </div>
+
+    <div style="max-width: 500px; margin: 2rem auto;">
+        <div class="detail-section">
+            <h3>Access Your Profile</h3>
+            <p style="margin-bottom: 2rem; color: var(--text-light);">
+                Enter the email address you used when making your bookings to view your profile and booking history.
+            </p>
+            
+            <form method="POST">
+                {{ form.hidden_tag() }}
+                
+                <div class="form-group">
+                    {{ form.email.label(class="form-label") }}
+                    {{ form.email(class="form-control", style="font-size: 1.1rem; padding: 1rem;") }}
+                    {% if form.email.errors %}
+                        <div style="color: var(--accent-burgundy); font-size: 0.9rem; margin-top: 0.5rem;">
+                            {% for error in form.email.errors %}{{ error }}{% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div style="margin-top: 2rem;">
+                    {{ form.submit(class="btn btn-primary", style="width: 100%; padding: 1rem; font-size: 1.1rem;") }}
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div style="max-width: 600px; margin: 3rem auto;">
+        <div class="detail-section" style="background: var(--soft-sand);">
+            <h3>Why do I need to enter my email?</h3>
+            <ul style="margin-top: 1rem; line-height: 1.8;">
+                <li><strong>Security:</strong> We protect your booking information by requiring email verification</li>
+                <li><strong>Privacy:</strong> Only you can access your booking history with your email</li>
+                <li><strong>Convenience:</strong> View all your bookings from different devices without creating an account</li>
+                <li><strong>Updates:</strong> We'll keep your information current across all your bookings</li>
+            </ul>
+        </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 3rem;">
+        <h3>Don't have any bookings yet?</h3>
+        <p style="margin-bottom: 2rem;">Explore our amazing venues and make your first booking!</p>
+        <a href="{{ url_for('venues') }}" class="btn btn-outline btn-large">Browse Venues</a>
+    </div>
+</div>
+{% endblock %}
